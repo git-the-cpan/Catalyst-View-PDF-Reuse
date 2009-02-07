@@ -1,0 +1,18 @@
+--- #YAML:1.0
+name:                Catalyst-View-PDF-Reuse
+version:             0.02
+abstract:            Create PDF files from Catalyst using Template Toolkit templates
+license:             ~
+author:              
+    - Jon Allen <jj@pennysarcade.co.uk>
+generated_by:        ExtUtils::MakeMaker version 6.44
+distribution_type:   module
+requires:     
+    Catalyst::View::TT:            0
+    File::chdir:                   0
+    PDF::Reuse:                    0
+    Template::Plugin::Procedural:  0
+    Test::More:                    0
+meta-spec:
+    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
+    version: 1.3

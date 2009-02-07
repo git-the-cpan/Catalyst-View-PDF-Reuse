@@ -1,0 +1,9 @@
+Revision history for Catalyst-View-PDF-Reuse
+
+0.02    07-Feb-2009 12:19
+        Added option to control the Content-Disposition header
+        Added 'render' method to access the raw PDF data
+
+0.01    Date/time
+        First version, released on an unsuspecting world.
+
