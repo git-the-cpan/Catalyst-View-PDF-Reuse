@@ -14,6 +14,7 @@ WriteMakefile(
         'PDF::Reuse' => 0,
         'File::chdir' => 0,
         'Template::Plugin::Procedural' => 0,
+        'parent' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Catalyst-View-PDF-Reuse-*' },
