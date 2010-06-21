@@ -4,21 +4,18 @@ use warnings;
 use strict;
 use parent 'Catalyst::View::TT';
 use File::chdir;
-use File::Spec::Functions qw/catfile/;
+use File::Spec::Functions qw/catfile rel2abs/;
 use File::Temp qw/tmpnam/;
 use PDF::Reuse;
+
+our $VERSION = '0.04';
+
 
 =head1 NAME
 
 Catalyst::View::PDF::Reuse - Create PDF files from Catalyst using Template Toolkit templates
 
-=head1 VERSION
-
-Version 0.02
-
 =cut
-
-our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
@@ -120,6 +117,14 @@ F<1234.pdf>.
 sub process {
     my ($self, $c) = @_;
 
+    my $output = $self->render_pdf($c);
+    if (UNIVERSAL::isa($output, 'Template::Exception')) {
+        my $error = qq/Couldn't render template "$output"/;
+        $c->log->error($error);
+        $c->error($error);
+        return 0;
+    }
+
     my $pdf_filename = $c->stash->{pdf_filename} || (split '/',$c->req->path)[-1] || 'index.pdf';
     $pdf_filename .= '.pdf' unless ($pdf_filename =~ /\.pdf$/i);
     
@@ -128,7 +133,7 @@ sub process {
     $c->response->content_type('application/pdf');
     $c->response->headers->header("Content-Disposition" => qq{$pdf_disposition; filename="$pdf_filename"});
     
-    $c->response->body($self->render_pdf($c));
+    $c->response->body($output);
 }
 
 
@@ -148,6 +153,7 @@ sub render_pdf {
   
     my $template = <<'EOT';
     [% USE pdf = Catalyst::View::PDF::Reuse %]
+    [% USE barcode = Catalyst::View::PDF::Reuse::Barcode %]
     [% PROCESS $pdf_template %]
 EOT
 
@@ -155,10 +161,16 @@ EOT
     prInitVars();
     prFile($tempfile);
     
+    # Convert any relative include paths to absolute paths
+    foreach my $path (@{$self->config->{INCLUDE_PATH}}) {
+        $path = rel2abs($path);
+    }
+
+    my $output;
     SEARCH: foreach my $path (@{$self->config->{INCLUDE_PATH}}) {
         if (-e catfile($path,$c->stash->{pdf_template})) {
             local $CWD = $path;
-            my $output = $self->render($c,\$template);
+            $output = $self->render($c,\$template);
             last SEARCH;
         }
     }
@@ -172,7 +184,7 @@ EOT
     close PDF;
     unlink $tempfile;
 
-    return $pdf;
+    return (UNIVERSAL::isa($output, 'Template::Exception')) ? $output : $pdf;
 }
 
 =head1 AUTHOR
@@ -192,9 +204,6 @@ automatically be notified of progress on your bug as I make changes.
 You can find documentation for this module with the perldoc command.
 
  perldoc Catalyst::View::PDF::Reuse
-
-Commercial support for this module is available from Penny's Arcade Limited,
-see L<http://www.pennysarcade.co.uk/contact> for contact details.
 
 You can also look for information at:
 

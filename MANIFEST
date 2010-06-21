@@ -1,11 +1,12 @@
 Changes
-MANIFEST
-Makefile.PL
-README
-lib/Catalyst/View/PDF/Reuse.pm
 lib/Catalyst/Helper/View/PDF/Reuse.pm
+lib/Catalyst/View/PDF/Reuse.pm
 lib/Template/Plugin/Catalyst/View/PDF/Reuse.pm
+lib/Template/Plugin/Catalyst/View/PDF/Reuse/Barcode.pm
+Makefile.PL
+MANIFEST
+README
 t/00-load.t
-t/pod-coverage.t
+t/boilerplate.t
 t/pod.t
 META.yml                                 Module meta-data (added by MakeMaker)
