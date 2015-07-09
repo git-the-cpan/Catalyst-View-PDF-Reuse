@@ -7,9 +7,12 @@ use File::chdir;
 use File::Spec::Functions qw/catfile rel2abs/;
 use File::Temp qw/tmpnam/;
 use PDF::Reuse;
+use utf8;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
+
+=encoding utf-8
 
 =head1 NAME
 
